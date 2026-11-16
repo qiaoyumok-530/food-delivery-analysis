@@ -1,0 +1,40 @@
+cabal-version:      2.4
+name:               food-delivery
+version:            0.1.0.0
+synopsis:           PRG2214 Assignment 2 - Food Delivery Profitability Analytics
+build-type:         Simple
+extra-source-files: data/*.csv
+
+-- DO NOT rename modules or change the exported type signatures in
+-- src/Analysis.hs, src/Toolkit.hs and src/ReviewFixed.hs.
+-- They are the interface used by the automated marking tests.
+-- You MAY add your own modules: list them under other-modules below.
+
+common shared
+    default-language: Haskell2010
+    ghc-options:      -Wall
+    build-depends:    base >=4.14 && <5,
+                      containers >=0.6
+
+library
+    import:           shared
+    hs-source-dirs:   src
+    exposed-modules:  Order
+                      Toolkit
+                      Analysis
+                      ReviewFixed
+                      Variant
+    -- other-modules: (add your own helper modules here)
+
+executable food-delivery
+    import:           shared
+    hs-source-dirs:   app
+    main-is:          Main.hs
+    build-depends:    food-delivery
+
+test-suite public-tests
+    import:           shared
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          PublicSpec.hs
+    build-depends:    food-delivery
