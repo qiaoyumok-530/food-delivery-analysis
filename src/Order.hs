@@ -28,7 +28,16 @@ data Discount
 
 -- | One order. TODO (Part A): design the fields you need.
 data Order = Order
-  { restaurantId :: String
-  -- TODO: add the remaining fields
-  }
-  deriving (Show, Eq)
+ { orderId       ::   String,
+   customerId    ::   String,
+   restaurantId  ::   String,
+   orderDateTime ::   String,
+   deliveryDateTime   ::   String,
+   orderValue    ::   Double,
+   deliveryFee   ::   Double,
+   paymentMethod ::   PaymentMethod,
+   discountOffer ::   Discount,
+   commissionFee ::   Double,
+   paymentProcessFee ::   Double,
+   refundsChargebacks        ::   Double
+   } deriving (Show, Eq)
