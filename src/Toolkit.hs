@@ -8,6 +8,7 @@ module Toolkit
   , sumCalc
   , topNBy
   , sortDesc
+  , compDescKey
   ) where
 
 import qualified Data.Map.Strict as Map
@@ -47,3 +48,6 @@ topNBy comparator n =
 
 sortDesc :: Ord b => (a -> b) -> [a] -> [a]
 sortDesc keyToSort = sortOn (Down . keyToSort)
+
+compDescKey :: Ord b => (a -> b) -> a -> a -> Ordering
+compDescKey key a b = compare (key b) (key a) -- compare in descending order

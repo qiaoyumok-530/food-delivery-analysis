@@ -36,6 +36,18 @@ c. Sum types in PaymentMethod and Discount are integrated instead of using Strin
 ------------------------------------------------------------------------------------
 
 Section 2
+    splitField :: String -> [String]
+    # Splits a single row of data into a list that contains all the fields belongs to that order
+
+    getRowField :: Int -> [String] -> Maybe String
+    # Returns the particular item from a list that is needed by using the Int
+
+    getFieldByName :: String -> [String] -> [String] -> Maybe String
+    # Returns the particular field according to the header from a list by using a list of header, returning Nothing if there is no such field.
+
+    parseOrderRow :: [String] -> [String] -> Maybe Order
+    # Returns an Order by using a list of headers and a list of fields, returning Nothing if the list of fields contain invalid data.
+
     parseOrders :: String -> ([Order], Int)
     # Parses the entire CSV text into a list valid orders and returns the number of invalid data rows skipped.
 
@@ -87,16 +99,13 @@ Q4: a. countBy        :: Ord k => (a -> k) -> [a] -> [(k, Int)]
     d. sumCalc :: Num b => (a -> b) -> [a] -> b
     # Applies a function to each item to obtain a numeric value and returns their total sum.
 
-    e. filterBy :: (a -> Bool) -> [a] -> [a]
-    # Applies a function that returns a bool value for an item according to a specified condition on a list of items and returns only the items that satisfy the condition.
-
-    f. topNBy :: (a -> a -> Ordering) -> Int -> [a] -> [a]
+    e. topNBy :: (a -> a -> Ordering) -> Int -> [a] -> [a]
     # Sorts a list using a custom comparator and returns the top n items.
 
-    g. sortDesc :: Ord b => (a -> b) -> [a] -> [a]
+    f. sortDesc :: Ord b => (a -> b) -> [a] -> [a]
     # Sorts a list in descending order according to a specific property
 
-    h. sortAsc :: Ord b => (a -> b) -> [a] -> [a]
+    g. sortAsc :: Ord b => (a -> b) -> [a] -> [a]
     # Sorts a list in ascending order according to a specific property
 
 Q5: X3-Y4
@@ -109,12 +118,12 @@ Q5: X3-Y4
 Section 4
 How you will turn each "Discounts and Offers" text into a discount amount
 Step 1: Parse the discount text into a Discount type
-1. Check whether the discount text contains a number
-2. If yes, check whether the number is followed by a % character.
-3. If there is a % after the number, it is Percent.
-4. If there is no % after the number, it is Flat.
-5. If the text is "None", it is NoDiscount
-6. If the text does not contain a number, returns Nothing.
+1. If the text is "None", it is NoDiscount
+2. Check whether the discount text contains a number, if not returns Nothing
+3. If yes, check whether the number is followed by a % character.
+4. If there is a '%' after the number, it is Percent.
+5. If there is an "off" keyword, it is Flat.
+6. If the contains neither a '%' nor "off", returns Nothing
 Step 2: Calculate the actual discount amount
 Discount Type:
 1. Percent: Order Value * Percent value / 100
