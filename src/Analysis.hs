@@ -36,7 +36,7 @@ import Text.Read (readMaybe)
 --   "50 off Promo" -> Just (Flat 50); anything unrecognised -> Nothing.
 parseDiscount :: String -> Maybe Discount
 parseDiscount discountText
-  | normalised == "none" = Just NoDiscount -- ND for discount text = none
+  | normalised == "none" || normalised == "" = Just NoDiscount -- ND for discount text = none
   | not (any isDigit normalised) = Nothing -- no digit in the discount text = Nothing
   | otherwise =
       case break (=='%') normalised of -- break the discount text into 2 parts, first without %, second with % 
@@ -95,26 +95,27 @@ getFieldByName dataNeed allHeaders fieldsPerRow =
     Nothing -> Nothing
 
 parseOrderRow :: [String] -> [String] -> Maybe Order
-parseOrderRow allHeaders perRow =
-  Order
-    <$> getFieldByName "Order ID" allHeaders perRow
-    <*> getFieldByName "Customer ID" allHeaders perRow
-    <*> getFieldByName "Restaurant ID" allHeaders perRow
-    <*> getFieldByName "Order Date and Time" allHeaders perRow
-    <*> getFieldByName "Delivery Date and Time" allHeaders perRow
-    <*> (getFieldByName "Order Value" allHeaders perRow >>= readMaybe)
-    <*> (getFieldByName "Delivery Fee" allHeaders perRow >>= readMaybe)
-    <*> (getFieldByName "Payment Method" allHeaders perRow >>= parsePayment)
-    <*> (getFieldByName "Discounts and Offers" allHeaders perRow >>= parseDiscount)
-    <*> (getFieldByName "Commission Fee" allHeaders perRow >>= readMaybe)
-    <*> (getFieldByName "Payment Processing Fee" allHeaders perRow >>= readMaybe)
-    <*> (getFieldByName "Refunds/Chargebacks" allHeaders perRow >>= readMaybe)
+parseOrderRow allHeaders perRow 
+  | length allHeaders /= length perRow = Nothing
+  | otherwise =
+    Order
+      <$> getFieldByName "Order ID" allHeaders perRow
+      <*> getFieldByName "Customer ID" allHeaders perRow
+      <*> getFieldByName "Restaurant ID" allHeaders perRow
+      <*> getFieldByName "Order Date and Time" allHeaders perRow
+      <*> getFieldByName "Delivery Date and Time" allHeaders perRow
+      <*> (getFieldByName "Order Value" allHeaders perRow >>= readMaybe)
+      <*> (getFieldByName "Delivery Fee" allHeaders perRow >>= readMaybe)
+      <*> (getFieldByName "Payment Method" allHeaders perRow >>= parsePayment)
+      <*> (getFieldByName "Discounts and Offers" allHeaders perRow >>= parseDiscount)
+      <*> (getFieldByName "Commission Fee" allHeaders perRow >>= readMaybe)
+      <*> (getFieldByName "Payment Processing Fee" allHeaders perRow >>= readMaybe)
+      <*> (getFieldByName "Refunds/Chargebacks" allHeaders perRow >>= readMaybe)
     
 parseOrders :: String -> ([Order], Int)
 parseOrders dataset =
    case lines dataset of
     [] -> ([], 0)
-
     headerLine:rowLines ->
       let allHeaders =splitField headerLine
           nonBlankRows = filter (not . null) rowLines
@@ -168,17 +169,18 @@ averageDiscount orders = average (\order -> discountAmount (orderValue order) (d
 -- | profit = Commission Fee
 --          - (Delivery Fee + Payment Processing Fee + discount amount + Refunds/Chargebacks)
 orderProfit :: Order -> Double
-orderProfit = error "TODO: orderProfit"
+orderProfit order = (commissionFee order) - (deliveryFee order + paymentProcessFee order + (discountAmount (orderValue order) (discountOffer order)) + refundsChargebacks order) 
+  -- Profit = Commission Fee - (Delivery Fee + Payment Processing Fee + Discount Amount + Refunds/Chargebacks)
 
 -- | Sum of orderProfit over all orders.
 totalProfit :: [Order] -> Double
-totalProfit = error "TODO: totalProfit"
+totalProfit orders = sumCalc orderProfit orders 
 
 -- | Percentage (0–100) of orders with profit < 0. Nothing for no orders.
 lossPercentage :: [Order] -> Maybe Double
-lossPercentage = error "TODO: lossPercentage"
+lossPercentage orders = average (\order -> if orderProfit order < 0 then 100 else 0) orders
 
 -- | Top n restaurants by total profit: profit descending,
 --   ties broken by Restaurant ID ascending.
 topProfitRestaurants :: Int -> [Order] -> [(String, Double)]
-topProfitRestaurants = error "TODO: topProfitRestaurants"
+topProfitRestaurants n orders = topNBy (compDescKey snd) n (sortOn fst (groupAggregate restaurantId (sumCalc orderProfit) orders))

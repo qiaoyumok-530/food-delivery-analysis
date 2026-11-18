@@ -7,14 +7,11 @@ module Toolkit
   , average
   , sumCalc
   , topNBy
-  , sortDesc
   , compDescKey
   ) where
 
 import qualified Data.Map.Strict as Map
-import Data.Ord (Down(..))
 import Data.List (sortBy)
-import Data.List (sortOn)
 
 -- | Count elements by key. Result sorted by key (ascending).
 --   countBy length ["a","bb","cc"] == [(1,1),(2,2)]
@@ -43,11 +40,10 @@ sumCalc funcToApply = sum . map funcToApply
 
 -- topNBy must be stable sorting!!!!!
 topNBy :: (a -> a -> Ordering) -> Int -> [a] -> [a]
-topNBy comparator n = 
-  take n . sortBy comparator
+topNBy comparator n = take n . sortBy comparator
 
-sortDesc :: Ord b => (a -> b) -> [a] -> [a]
-sortDesc keyToSort = sortOn (Down . keyToSort)
+-- sortDesc :: Ord b => (a -> b) -> [a] -> [a]
+-- sortDesc keyToSort = sortOn (Down . keyToSort)
 
 compDescKey :: Ord b => (a -> b) -> a -> a -> Ordering
 compDescKey key a b = compare (key b) (key a) -- compare in descending order
