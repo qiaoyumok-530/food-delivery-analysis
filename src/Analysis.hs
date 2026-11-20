@@ -49,7 +49,6 @@ parseDiscount discountText
               Flat <$> readMaybe number -- number becomes flat discount
 
             _ -> Nothing -- Nothing if no off word
-
   where 
     normalised = map toLower (unwords(words discountText))
 

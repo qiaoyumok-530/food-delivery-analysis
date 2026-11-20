@@ -81,21 +81,26 @@ Section 2
 
     getFieldByName :: String -> [String] -> [String] -> Maybe String
     # Returns the particular field according to the header from a field list by using the header, returning Nothing if there is no such field.
+    # Helper functions required: getRowField
 
     parseOrderRow :: [String] -> [String] -> Maybe Order
     # Returns an Order by using a list of headers and a list of fields, returning Nothing if the list of fields contain invalid data.
+    # Helper functions required: getFieldByName, parsePayment, parseDiscount
 
     parseOrders :: String -> ([Order], Int)
     # Parses the entire CSV text into a list of valid orders and returns the number of invalid data rows skipped.
+    # Helper functions required: splitField, parseOrderRow
 
     parsePayment :: String -> Maybe PaymentMethod
     # Converts the payment method text into its corresponding PaymentMethod, returning Nothing for unrecognised text.
 
 Q1: a. topRestaurants :: Int -> [Order] -> [(String, Int)]
     # Returns the top n restaurants ranked by order count in descending order with its ascending order of restaurantID and number of orders.
+    # Helper functions required: countBy, compDescKey, topNBy
     
     b. ordersByPayment :: [Order] -> [(PaymentMethod, Int)] 
     # Returns the total number of orders placed under each payment method.
+    # Helper functions required: countBy
 
 Q2: a. parseDiscount :: String -> Maybe Discount
     # Converts the discount text into its respective Discount constructor such as Percent, Flat or NoDiscount, returning Nothing for the unrecognised offer text instead of ignoring it.
@@ -105,24 +110,31 @@ Q2: a. parseDiscount :: String -> Maybe Discount
 
     c. discountTotals :: [Order] -> [(Discount, Double)]
     # Returns the total discount amount for each Discount type across a list of orders.
+    # Helper functions required: groupAggregate, sumCalc, discountAmount
 
     d. costliestOffer :: [Order] -> Maybe (Discount, Double)
     # Returns the Discount type with the highest total discount amount, returning Nothing when the order has no applicable discount offers.
+    # Helper functions required: discountTotals, compDescKey, topNBy
 
     e. averageDiscount :: [Order] -> Maybe Double 
     # Returns the average discount amount per order, returning Nothing to avoid a zero division error when the order list is empty.
+    # Helper functions required: average, discountAmount
 
 Q3: a. orderProfit :: Order -> Double
     # Returns the net profit or loss of an order.
+    # Helper functions required: discountAmount
 
     b. totalProfit :: [Order] -> Double
     # Returns the total net profit or loss across a list of orders.
+    # Helper functions required: sumCalc, orderProfit
 
     c. lossPercentage :: [Order] -> Maybe Double
     # Returns the percentage of orders that causes a loss from a list of orders, returning Nothing if the order list is empty.
+    # Helper functions required: average, orderProfit
 
     d. topProfitRestaurants :: Int -> [Order] -> [(String, Double)] 
     # Returns the top n restaurants ranked by total net profit descending with its ascending order of restaurantID.
+    # Helper functions required: topNBy, compDescKey, groupAggregate, sumCalc 
 
 Q4: a. countBy        :: Ord k => (a -> k) -> [a] -> [(k, Int)]
     # Groups items by a specific key that is extracted from a function and returns each key with its number of occurrences.
@@ -145,9 +157,11 @@ Q4: a. countBy        :: Ord k => (a -> k) -> [a] -> [(k, Int)]
 Q5: X3-Y4
     a. variantX :: [Order] -> [(String, Double)]
     # Returns the top 3 customers ranked by order count in descending order with its customerID and number of orders made.
+    # Helper functions required: topNBy, compDescKey, groupAggregate
 
     b. variantY :: [Order] -> Double
     # Calculates the total net profit across all orders and then adds amount of 15 for each CashOnDelivery order.
+    # Helper functions required: sumCalc
 
 Section 4
 How you will turn each "Discounts and Offers" text into a discount amount
