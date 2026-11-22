@@ -148,12 +148,21 @@ discountAmount orderValue discount =
 
 -- | Total discount amount per offer type (excluding NoDiscount),
 --   sorted by Discount.
+-- discountTotals :: [Order] -> [(Discount, Double)]
+-- discountTotals orders = 
+--   groupAggregate fst (sumCalc snd) ordersWithDiscount
+--     where
+--       filteredOrders = filter ((/= NoDiscount) . discountOffer) orders
+--       ordersWithDiscount = map (\order -> ( discountOffer order, discountAmount (orderValue order) (discountOffer order))) filteredOrders
+-- Helper function
+discountedOrderList :: [Order] -> [Order]
+discountedOrderList orders = filter ((/= NoDiscount) . discountOffer) orders
+-- Helper function
+ordersWithDiscount :: [Order] -> [(Discount, Double)]
+ordersWithDiscount orders = map (\order -> ( discountOffer order, discountAmount (orderValue order) (discountOffer order))) (discountedOrderList orders)
+
 discountTotals :: [Order] -> [(Discount, Double)]
-discountTotals orders = 
-  groupAggregate fst (sumCalc snd) ordersWithDiscount
-    where
-      filteredOrders = filter ((/= NoDiscount) . discountOffer) orders
-      ordersWithDiscount = map (\order -> ( discountOffer order, discountAmount (orderValue order) (discountOffer order))) filteredOrders
+discountTotals orders = groupAggregate fst (sumCalc snd) (ordersWithDiscount orders)
 
 -- | The offer type with the largest total discount (Nothing if none).
 costliestOffer :: [Order] -> Maybe (Discount, Double)

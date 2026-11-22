@@ -63,13 +63,6 @@ data Discount
   | NoDiscount
   deriving (Show, Eq, Ord)
 
-a. String is chosen for identifiers such as orderId, customerId and restaurantId because they contain alphanumeric prefixes like Customer ID C8270, which cannot be parsed into numeric types. In addition, the identifiers are not referring to quantities or amounts. Furthermore, String has built-in instances for Eq and Ord for equality comparison and ordering that are important in analysis later.
-Date and Time data including orderDateTime and delDateTime is defined with String as Haskell's Prelude library does not provide a dedicated date and time type. In this project, none of the tasks require to perform duration calculations. Thus, using String is simpler for parsing and avoids external library overhead. 
-
-b. Double is used for monetary fields such as orderValue, deliveryFee, commissionFee, payProcessFee and refund. Although the dataset contains only whole numbers, using Integer may cause an extra step on calculations later such as applying discount rate. Using Double can prevent repeated type conversions for decimal results during arithmetic operations.
-
-c. Sum types in PaymentMethod and Discount are integrated instead of using String to ensure that only the valid cases are accepted and essentially prevents invalid values. Additionally, for Discount, Percent and Flat store their respective rate or amount whereas NoDiscount takes no argument as no deduction is applied.
-
 ------------------------------------------------------------------------------------
 
 Section 2
@@ -108,15 +101,22 @@ Q2: a. parseDiscount :: String -> Maybe Discount
     b. discountAmount :: Double -> Discount -> Double
     # Returns the actual discount amount using the given order value and a Discount type.
 
-    c. discountTotals :: [Order] -> [(Discount, Double)]
-    # Returns the total discount amount for each Discount type across a list of orders.
-    # Helper functions required: groupAggregate, sumCalc, discountAmount
+    c. discountedOrderList :: [Order] -> [Order]
+    # A helper function that filters the orders with no applicable discount, keeping only orders with applicable discount
 
-    d. costliestOffer :: [Order] -> Maybe (Discount, Double)
+    d. ordersWithDiscount :: [Order] -> [(Discount, Double)]
+    # A helper function that returns the orders that has applicable discount with its discount type and discounted amount
+    # Helper functions required: discountedOrderList
+
+    e. discountTotals :: [Order] -> [(Discount, Double)]
+    # Returns the total discount amount for each Discount type across a list of orders.
+    # Helper functions required: groupAggregate, sumCalc, discountAmount, ordersWithDiscount
+
+    f. costliestOffer :: [Order] -> Maybe (Discount, Double)
     # Returns the Discount type with the highest total discount amount, returning Nothing when the order has no applicable discount offers.
     # Helper functions required: discountTotals, compDescKey, topNBy
 
-    e. averageDiscount :: [Order] -> Maybe Double 
+    g. averageDiscount :: [Order] -> Maybe Double 
     # Returns the average discount amount per order, returning Nothing to avoid a zero division error when the order list is empty.
     # Helper functions required: average, discountAmount
 
