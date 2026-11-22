@@ -163,6 +163,161 @@ Q5: X3-Y4
     # Calculates the total net profit across all orders and then adds amount of 15 for each CashOnDelivery order.
     # Helper functions required: sumCalc
 
+Section 3
+
+Raw CSV File
+    |
+  String
+    |
+    v
+parseOrders :: String -> ([Order], Int)
+    |
+    +-- lines
+    |
+    +-- splitField :: String -> [String]
+    |       |
+    |      break
+    |
+    +-- filter
+    |
+    +-- map
+    |   
+    +-- parseOrderRow :: [String] -> [String] -> Maybe Order
+    |       |
+    |       +-- length
+    |       |
+    |       +-- getFieldByName :: String -> [String] -> [String] -> Maybe String
+    |       |       |
+    |       |       +-- elemIndex
+    |       |       +-- getRowField :: Int -> [String] -> Maybe String
+    |       |               |
+    |       |              drop
+    |       |
+    |       +-- readMaybe
+    |       |
+    |       +-- parsePayment :: String -> Maybe PaymentMethod
+    |       |
+    |       +-- parseDiscount :: String -> Maybe Discount
+    |               |
+    |               +-- break
+    |               +-- words
+    |               +-- readMaybe
+    |
+    +-- length
+    |
+    +-- isNothing
+    |
+    v
+([Order], Int)
+    |
+   fst
+    |
+    v
+ [Order]
+    |
+    v
+    Q1
+    |
+    +-- topRestaurants :: Int -> [Order] -> [(String, Int)]
+    |       |
+    |       +-- topNBy :: (a -> a -> Ordering) -> Int -> [a] -> [a]
+    |       +-- sortOn
+    |       +-- compDescKey :: Ord b => (a -> b) -> a -> a -> Ordering
+    |       +-- countBy :: Ord k => (a -> k) -> [a] -> [(k, Int)]
+    |       +-- snd
+    |       +-- fst
+    |
+    +-- ordersByPayment :: [Order] -> [(PaymentMethod, Int)]
+               |
+            countBy :: Ord k => (a -> k) -> [a] -> [(k, Int)]
+
+
+    |
+    v
+    Q2
+    |
+    +-- discountTotals :: [Order] -> [(Discount, Double)]
+    |       |
+    |       +-- groupAggregate :: Ord k => (a -> k) -> ([a] -> v) -> [a] -> [(k, v)]
+    |       +-- fst
+    |       +-- snd
+    |       +-- sumCalc :: Num b => (a -> b) -> [a] -> b
+    |       +-- ordersWithDiscount :: [Order] -> [(Discount, Double)]
+    |               |
+    |               +-- map
+    |               +-- discountAmount :: Double -> Discount -> Double
+    |               +-- discountedOrderList :: [Order] -> [Order]
+    |                           |
+    |                           +-- filter
+    |               
+    |
+    +-- costliestOffer :: [Order] -> Maybe (Discount, Double)
+    |       |
+    |       +-- discountTotals :: [Order] -> [(Discount, Double)]
+    |       +-- topNBy :: (a -> a -> Ordering) -> Int -> [a] -> [a]
+    |       +-- compDescKey :: Ord b => (a -> b) -> a -> a -> Ordering
+    |       +-- snd
+    |       +-- listToMaybe
+    |
+    +-- averageDiscount :: [Order] -> Maybe Double
+            |
+            +-- average :: Fractional b => (a -> b) -> [a] -> Maybe b
+            +-- discountAmount :: Double -> Discount -> Double
+
+
+    |
+    v
+    Q3
+    |
+    +-- totalProfit :: [Order] -> Double
+    |       |
+    |       +-- sumCalc :: Num b => (a -> b) -> [a] -> b
+    |       +-- orderProfit :: Order -> Double
+    |                |
+    |                +-- discountAmount :: Double -> Discount -> Double
+    |
+    +-- lossPercentage :: [Order] -> Maybe Double
+    |       |
+    |       +-- average :: Fractional b => (a -> b) -> [a] -> Maybe b
+    |       +-- orderProfit :: Order -> Double
+    |                |
+    |                +-- discountAmount :: Double -> Discount -> Double
+    |
+    +-- topProfitRestaurants :: Int -> [Order] -> [(String, Double)]
+            |
+            +-- topNBy :: (a -> a -> Ordering) -> Int -> [a] -> [a]
+            +-- compDescKey :: Ord b => (a -> b) -> a -> a -> Ordering
+            +-- sortOn
+            +-- groupAggregate :: Ord k => (a -> k) -> ([a] -> v) -> [a] -> [(k, v)]
+            +-- restaurantId
+            +-- sumCalc :: Num b => (a -> b) -> [a] -> b
+            +-- orderProfit :: Order -> Double
+                    |
+                    +-- discountAmount :: Double -> Discount -> Double
+            +-- fst
+            +-- snd
+
+    |
+    v
+    Q5: X3-Y4
+    |
+    +-- variantX :: [Order] -> [(String, Double)]
+    |       |
+    |       +-- topNBy :: (a -> a -> Ordering) -> Int -> [a] -> [a]
+    |       +-- compDescKey :: Ord b => (a -> b) -> a -> a -> Ordering
+    |       +-- snd
+    |       +-- sortOn
+    |       +-- fst
+    |       +-- groupAggregate :: Ord k => (a -> k) -> ([a] -> v) -> [a] -> [(k, v)]
+    |       +-- fromIntegral
+    |       +-- length
+    |
+    +-- variantY :: [Order] -> Double
+            +-- sumCalc :: Num b => (a -> b) -> [a] -> b
+            +-- orderProfit :: Order -> Double
+                    |
+                    +-- discountAmount :: Double -> Discount -> Double
+
 Section 4
 How you will turn each "Discounts and Offers" text into a discount amount
 Step 1: Parse the discount text into a Discount type
