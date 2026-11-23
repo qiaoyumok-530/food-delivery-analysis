@@ -4,7 +4,7 @@ data Order = Order
    customerId    ::   String,
    restaurantId  ::   String,
    orderDateTime ::   String,
-   deliveryDateTime   ::   String,
+   deliveryDateTime ::   String,
    orderValue    ::   Double,
    deliveryFee   ::   Double,
    paymentMethod ::   PaymentMethod,
@@ -24,10 +24,10 @@ data Order = Order
    - String is used because restaurantId is an identifier for a single restaurant in this platform. It contains alphanumeric prefixes like Restaurant ID R2924, which cannot be parsed into numeric types. In addition, the identifiers are not referring to quantities or amounts. Furthermore, String has built-in instances of Eq and Ord for equality comparison and ordering operations that are important in analysis later.
 
    d. orderDateTime :: String
-   - orderDateTime represents the date and time when an order is placed. It is defined as String because Haskell's Prelude library does not provide a dedicated date and time type. As this project does not require date and time calculations, using String is simpler for parsing and avoids additional external library overhead. 
+   - orderDateTime represents the date and time when an order is placed. It is defined as String because this project does not require date and time calculations, using String is simpler for parsing and avoids additional external library overhead. 
 
    e. deliveryDateTime :: String
-   - deliveryDateTime represents the date and time when an order is delivered. It is defined as String because Haskell's Prelude library does not provide a dedicated date and time type. As this project does not require date and time calculations, using String is simpler for parsing and avoids additional external library overhead. 
+   - deliveryDateTime represents the date and time when an order is delivered. It is defined as String because this project does not require date and time calculations, using String is simpler for parsing and avoids additional external library overhead. 
 
    f. orderValue :: Double
    - orderValue represents the total amount of a single order. It is defined as Double. Although the dataset contains only whole numbers, calculations such as applying discount rate may require decimal results. Using Double allows these calculations to be performed directly without repeated type conversions during arithmetic operations.
@@ -117,7 +117,7 @@ Q2: a. parseDiscount :: String -> Maybe Discount
     # Helper functions required: discountTotals, compDescKey, topNBy
 
     g. averageDiscount :: [Order] -> Maybe Double 
-    # Returns the average discount amount per order, returning Nothing to avoid a zero division error when the order list is empty.
+    # Returns the average discount amount across all orders, returning Nothing to avoid a zero division error when the order list is empty.
     # Helper functions required: average, discountAmount
 
 Q3: a. orderProfit :: Order -> Double
@@ -326,7 +326,7 @@ Step 1: Parse the discount text into a Discount type
 3. If yes, check whether the number is followed by a % character.
 4. If there is a '%' after the number, it is Percent.
 5. If there is an "off" keyword, it is Flat.
-6. If the contains neither a '%' nor "off", returns Nothing
+6. If the text contains neither a '%' nor "off", returns Nothing
 Step 2: Calculate the actual discount amount
 Discount Type:
 1. Percent: Order Value * Percent value / 100
