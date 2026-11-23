@@ -106,7 +106,7 @@ Q2: a. parseDiscount :: String -> Maybe Discount
 
     d. ordersWithDiscount :: [Order] -> [(Discount, Double)]
     # A helper function that returns the orders that has applicable discount with its discount type and discounted amount
-    # Helper functions required: discountedOrderList
+    # Helper functions required: discountAmount, discountedOrderList
 
     e. discountTotals :: [Order] -> [(Discount, Double)]
     # Returns the total discount amount for each Discount type across a list of orders.
@@ -161,7 +161,7 @@ Q5: X3-Y4
 
     b. variantY :: [Order] -> Double
     # Calculates the total net profit across all orders and then adds amount of 15 for each CashOnDelivery order.
-    # Helper functions required: sumCalc
+    # Helper functions required: sumCalc, orderProfit
 
 Section 3
 
