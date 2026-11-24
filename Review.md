@@ -18,4 +18,4 @@ e. Incorrect sorting order - " compareCount (_, a) (_, b) = compare a b "
 
 -- Question 3 --
 
-I learned that we cannot blindly trust AI-generated code just because it compiles successfully, as it may still contain mistakes. For example, I discovered that functions such as `!!`, and `read` can cause runtime errors, while incorrect sorting can produce wrong results. Therefore, I will always test AI-generated code and understand how its functions work before accepting it.
+What I have learned from this example is that we should not blindly trust AI-generated code just because it compiles successfully, as it may still contain mistakes. For example, I discovered that functions such as `!!`, and `read` can cause runtime errors, while incorrect sorting can produce wrong results. Therefore, I will always test AI-generated code and understand how its functions work before accepting it.
